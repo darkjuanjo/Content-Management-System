@@ -1,6 +1,7 @@
 const inquirer = require('inquirer');
 const db_functions = require('./lib/db_functions');
 const cTable = require('console.table');
+const db = require('./db');
 
 
 //Show Menu Prompt
@@ -49,7 +50,7 @@ function Actions(action) {
                 db_functions.viewByManager();
                 break;
                 case 'Add Employee':
-                    db_functions.viewAllEmployees();
+                    db_functions.addEmployee();
                     break;
                     case 'Remove Employee':
                         db.db_functions.viewAllEmployees();

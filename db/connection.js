@@ -8,6 +8,7 @@ const connection = mysql.createConnection(
         user: 'root',
         // Your MYSQL password
         password: '123456',
+        multipleStatements: true,
         database: 'management'
     }
 );

@@ -28,6 +28,6 @@
     ('Kunal', 'Singh', 5, NULL),
     ('Malia', 'Brown', 6, 5),
     ('Sarah', 'Lourd', 7, NULL),
-    ('Tom', 'Allen', 4, 7);
+    ('Tom', 'Allen', 8, 7);
 
     
