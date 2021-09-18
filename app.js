@@ -57,10 +57,10 @@ function Actions(action) {
                         db_functions.removeEmployee();
                         break;
                         case 'Update Employee Role':
-                            db_functions.updateRole();
+                            db_functions.updateInfo('role');
                             break;
                             case 'Update Employee Manager':
-                                db_functions.viewAllEmployees();
+                                db_functions.updateInfo('manager');
                                 break;
     }
 }

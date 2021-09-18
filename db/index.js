@@ -49,6 +49,10 @@ class DB {
         );
     };
 
+    getTotalEmployees() {
+        
+    }
+
     viewAllEmployees() {
         return this.connection.promise().query(
             `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, 
@@ -197,20 +201,21 @@ class DB {
             `
             , [role, employee_id]
         );
-    }
+    };
 
-    updateEmployeeManager(manager_id, employee_id) {
+    updateEmployeeManager(employee_id, manager_id) {
         return this.connection.promise().query(
-            `UPDATE 
-                employee  
+            `
+            UPDATE 
+                employee
             SET 
-                manager_id = ?
-            WHERE
-                id = ?
+                employee.manager_id = ?
+            WHERE 
+                employee.id = ?;
             `
             , [manager_id, employee_id]
         );
-    }
+    };
 
 };
 
