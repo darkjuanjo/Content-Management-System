@@ -57,7 +57,7 @@ function Actions(action) {
                         db_functions.removeEmployee();
                         break;
                         case 'Update Employee Role':
-                            db_functions.viewAllEmployees();
+                            db_functions.updateRole();
                             break;
                             case 'Update Employee Manager':
                                 db_functions.viewAllEmployees();

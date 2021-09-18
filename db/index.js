@@ -181,6 +181,24 @@ class DB {
         );
     }
 
+    updateEmployeeRole(employee_id, role) {
+        return this.connection.promise().query(
+            `
+            UPDATE 
+                role
+            RIGHT JOIN 
+                employee
+            ON 
+                employee.role_id = role.id
+            SET 
+                role.title = ?
+            WHERE 
+                employee.id = ?;
+            `
+            , [role, employee_id]
+        );
+    }
+
     updateEmployeeManager(manager_id, employee_id) {
         return this.connection.promise().query(
             `UPDATE 
