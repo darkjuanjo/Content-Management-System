@@ -44,7 +44,8 @@ function Actions(action) {
         db_functions.viewAllEmployees();
         break;
         case 'View All Employees By Department':
-            db_functions.viewByDepartment();
+            db_functions.viewByDepartment()
+            .then(employees => console.table(employees));
         break;
             case 'View All Employees by Manager':
                 db_functions.viewByManager();
@@ -53,10 +54,10 @@ function Actions(action) {
                     db_functions.addEmployee();
                     break;
                     case 'Remove Employee':
-                        db.db_functions.viewAllEmployees();
+                        db_functions.removeEmployee();
                         break;
                         case 'Update Employee Role':
-                            db.db_functions.viewAllEmployees();
+                            db_functions.viewAllEmployees();
                             break;
                             case 'Update Employee Manager':
                                 db_functions.viewAllEmployees();

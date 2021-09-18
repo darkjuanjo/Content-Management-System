@@ -49,8 +49,6 @@ class DB {
         );
     };
 
-
-
     viewAllEmployees() {
         return this.connection.promise().query(
             `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, 
@@ -147,7 +145,7 @@ class DB {
     };
 
     addEmployee(employee) {
-        this.connection.promise().query(
+      return  this.connection.promise().query(
             `INSERT INTO
                 role(title, salary, department_id)
             VALUES
@@ -169,26 +167,19 @@ class DB {
                 employee.manager
             ]
         );
-        // this.connection.promise().query(
-        //     `INSERT INTO
-        //         employee(first_name, last_name, manager_id,role_id)
-        //     VALUES
-        //         (?,
-        //         ?,
-        //         ?,
-        //         (
-        //             SELECT 
-        //                 LAST_INSERT_ID()
-        //         )
-        //         );   
-        //     `
-        //     ,[ 
-        //         employee.first_name,
-        //         employee.last_name,
-        //         employee.manager
-        //     ]
-        // );
     };
+
+    removeEmployee(employee_id){
+        return this.connection.promise().query(
+            `DELETE 
+            FROM 
+                employee 
+            WHERE
+                employee.id = ?
+                `,
+            employee_id
+        );
+    }
 
     updateEmployeeManager(manager_id, employee_id) {
         return this.connection.promise().query(
