@@ -27,31 +27,71 @@ class DB {
         );
     };
 
+    getRoles(){
+        return this.connection.promise().query(
+            `SELECT DISTINCT
+                role.id , 
+                role.title
+            FROM role
+            `
+        );
+    };
+
     getManagers() {
         return this.connection.promise().query(
             `
-            SELECT 
-                employee.manager_id,
-
+            SELECT DISTINCT
+                manager.id,
             CONCAT
                 (manager.first_name, ' ', manager.last_name) 
             AS 
-                manager 
+                manager
             FROM
-                employee
+                employee manager
 
-            LEFT JOIN 
-                employee manager 
+            JOIN 
+                employee 
             ON 
-                manager.id = employee.manager_id
-            WHERE
-                employee.manager_id IS NOT NULL`
+                manager.id = employee.manager_id;
+`
         );
     };
 
     getTotalEmployees() {
-        
-    }
+        return this.connection.promise().query(
+            `
+            SELECT 
+                COUNT(*)
+            AS
+                count
+            FROM
+                employee`
+        );
+    };
+
+    getTotalRoles() {
+        return this.connection.promise().query(
+            `
+            SELECT 
+                COUNT(*)
+            AS
+                count
+            FROM
+                role`
+        );
+    };
+
+    getTotalDepartments() {
+        return this.connection.promise().query(
+            `
+            SELECT 
+                COUNT(*)
+            AS
+                count
+            FROM
+                department`
+        );
+    };
 
     viewAllEmployees() {
         return this.connection.promise().query(
@@ -137,39 +177,104 @@ class DB {
         );
     };
 
+    departmentBudget(department) {
+        return this.connection.promise().query(
+                `
+            SELECT 
+                department.name 
+            AS 
+                department, 
+                SUM(role.salary) total_budget
+            FROM 
+                employee 
+            LEFT JOIN 
+                role 
+            ON 
+                employee.role_id = role.id 
+            LEFT JOIN 
+                department 
+            ON 
+                role.department_id = department.id 
+            LEFT JOIN 
+                employee manager 
+            on manager.id = employee.manager_id
+            WHERE
+                role.department_id = ?;
+                `
+                ,department
+        );
+    };
+
     addDepartment(department) {
         return this.connection.promise().query(
             `INSERT INTO 
-                department 
-            SET 
-                ?
+                department (name) 
+            VALUES 
+                (?);
             `
             , department
         );
     };
 
     addEmployee(employee) {
-      return  this.connection.promise().query(
-            `INSERT INTO
-                role(title, salary, department_id)
-            VALUES
-                (?,?,?);
+        let sql =             
+                    `INSERT INTO
+                    employee (first_name, last_name, role_id, manager_id)
+                VALUES
+                    (?,?,?,?);             
+                    `;
+        let params = [employee.first_name, employee.last_name, employee.role, employee.manager];
+      return  this.connection
+      .promise()
+      .query(sql,params, (err,rows) => {
+          if(err)
+          {
+              return err.message;
+          }
+          return {message:'Employee added sucessfully!', data: rows}
+      });
+    };
 
-            INSERT INTO
-                employee(first_name, last_name, manager_id,role_id)
-            VALUES
-                (?,?,?,
-                (SELECT LAST_INSERT_ID())
-                );                   
+    addRole(title, salary, department) {
+        return  this.connection.promise().query(
+              `INSERT INTO
+                  role(title, salary, department_id)
+              VALUES
+                  (?,?,?);                  
+              `
+              ,[
+                  title, 
+                  salary, 
+                  department,
+              ]
+          );
+    };
+
+    updateEmployeeRole(employee_data) {
+        return this.connection.promise().query(
             `
-            ,[
-                employee.title, 
-                employee.salary, 
-                employee.department,
-                employee.first_name,
-                employee.last_name,
-                employee.manager
-            ]
+            UPDATE 
+                employee
+            SET 
+                employee.role_id = ?
+            WHERE 
+                employee.id = ?;
+            `
+            , [employee_data.role, employee_data.id]
+        );
+    };
+
+    updateEmployeeManager(employee) {
+        return this.connection.promise().query(
+            `
+            UPDATE 
+                employee
+            SET 
+                employee.manager_id = ?
+            WHERE 
+                employee.id = ?;
+            `
+            , [employee.manager, employee.id]
         );
     };
 
@@ -185,38 +290,29 @@ class DB {
         );
     }
 
-    updateEmployeeRole(employee_id, role) {
+    removeRole(role_id){
         return this.connection.promise().query(
-            `
-            UPDATE 
-                role
-            RIGHT JOIN 
-                employee
-            ON 
-                employee.role_id = role.id
-            SET 
-                role.title = ?
-            WHERE 
-                employee.id = ?;
-            `
-            , [role, employee_id]
+            `DELETE 
+            FROM 
+                role 
+            WHERE
+                role.id = ?
+                `,
+            role_id
         );
-    };
+    }
 
-    updateEmployeeManager(employee_id, manager_id) {
+    removeDepartment(department_id){
         return this.connection.promise().query(
-            `
-            UPDATE 
-                employee
-            SET 
-                employee.manager_id = ?
-            WHERE 
-                employee.id = ?;
-            `
-            , [manager_id, employee_id]
+            `DELETE 
+            FROM 
+                department 
+            WHERE
+                department.id = ?
+                `,
+            department_id
         );
-    };
-
+    }
 };
 
 module.exports = new DB(connection);
