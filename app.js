@@ -44,7 +44,7 @@ const DisplayEmployeeManagementOptions = () => {
                 'Add Department',
                 'Update Employee Manager',
                 'Update Employee Role',
-                'Update Employee Department',
+                'Update Role Department',
                 'Remove Employee',
                 'Remove Role',
                 'Remove Department',
@@ -175,21 +175,28 @@ function Actions(action) {
                                                 run();
                                             });
                                             break;
-                                                    case 'Remove Employee':
-                                            db_functions.removeEmployee()
-                                            .then(response => {
-                                                console.table(response);
-                                                run();
-                                            });
-                                            break;
-                                                        case 'Remove Role':
-                                                            db_functions.removeRole()
-                                                            .then(response => {
-                                                                console.table(response);
-                                                                run();
-                                                            });
-                                                            break;
-                                                            case 'Remove Department':
+                                                    case 'Update Role Department':
+                                                db_functions.updateEmployeeInfo('department')
+                                                .then(response => {
+                                                    console.table(response);
+                                                    run();
+                                                });
+                                                break;
+                                                        case 'Remove Employee':
+                                                db_functions.removeEmployee()
+                                                .then(response => {
+                                                    console.table(response);
+                                                    run();
+                                                });
+                                                break;
+                                                            case 'Remove Role':
+                                                                db_functions.removeRole()
+                                                                .then(response => {
+                                                                    console.table(response);
+                                                                    run();
+                                                                });
+                                                                break;
+                                                                case 'Remove Department':
                                                         db_functions.removeDepartment()
                                                         .then(response => {
                                                             console.table(response);

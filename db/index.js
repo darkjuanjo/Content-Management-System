@@ -30,9 +30,17 @@ class DB {
     getRoles(){
         return this.connection.promise().query(
             `SELECT DISTINCT
-                role.id , 
-                role.title
-            FROM role
+            role.id , 
+            role.title,
+            department.name
+        AS
+            department
+        FROM 
+            role
+        JOIN 
+            department
+        ON
+            role.department_id = department.id;
             `
         );
     };
@@ -275,6 +283,20 @@ class DB {
                 employee.id = ?;
             `
             , [employee.manager, employee.id]
+        );
+    };
+
+    updateRoleDepartment(employee_data) {
+        return this.connection.promise().query(
+            `
+            UPDATE 
+                role
+            SET 
+                role.department_id = ?
+            WHERE 
+                role.id = ?;
+            `
+            , [employee_data.department, employee_data.role]
         );
     };
 
